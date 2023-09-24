@@ -1,0 +1,9 @@
+package com.pharmacymanagement.drug.service;
+
+import com.pharmacymanagement.drug.entity.Drug;
+
+public interface DrugService {
+public Drug addDrug(Drug drug);
+public Drug getDrug(Long drugId);
+public Drug updateDrug(Drug drug,Long drugId);
+}

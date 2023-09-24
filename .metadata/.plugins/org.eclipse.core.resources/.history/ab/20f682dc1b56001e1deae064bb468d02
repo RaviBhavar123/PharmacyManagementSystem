@@ -1,0 +1,5 @@
+package com.pharmacymanagementsystem.OrderMicroService.entity;
+
+public class Drug {
+
+}

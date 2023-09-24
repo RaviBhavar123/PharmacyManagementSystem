@@ -1,0 +1,98 @@
+package com.pharmacymanagementsystem.OrderMicroService.entity;
+
+import java.util.Date;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "OrderData")
+public class Order {
+
+	@Id
+	private int orderId;
+
+	private int doctorId;
+	private Drug medicineDetails;
+	private int quantity;
+	private Date orderDate;
+	private boolean isValid;
+	private boolean isPickedup;
+	
+	
+	public Order(int orderId, int doctorId, Drug medicineDetails, int quantity, Date orderDate, boolean isValid,
+			boolean isPickedup) {
+		super();
+		this.orderId = orderId;
+		this.doctorId = doctorId;
+		this.medicineDetails = medicineDetails;
+		this.quantity = quantity;
+		this.orderDate = orderDate;
+		this.isValid = isValid;
+		this.isPickedup = isPickedup;
+	}
+
+	public int getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
+
+	public int getDoctorId() {
+		return doctorId;
+	}
+
+	public void setDoctorId(int doctorId) {
+		this.doctorId = doctorId;
+	}
+
+	public Drug getMedicineDetails() {
+		return medicineDetails;
+	}
+
+	public void setMedicineDetails(String medicineDetails) {
+		this.medicineDetails = medicineDetails;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public boolean isValid() {
+		return isValid;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+
+	public boolean isPickedup() {
+		return isPickedup;
+	}
+
+	public void setPickedup(boolean isPickedup) {
+		this.isPickedup = isPickedup;
+	}
+
+	
+}

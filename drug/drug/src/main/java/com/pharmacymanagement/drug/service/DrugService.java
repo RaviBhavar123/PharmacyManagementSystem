@@ -1,0 +1,11 @@
+package com.pharmacymanagement.drug.service;
+
+import com.pharmacymanagement.drug.entity.Drug;
+import com.pharmacymanagement.drug.exception.DrugException;
+
+public interface DrugService {
+public Drug addDrug(Drug drug)throws DrugException;
+public Drug getDrug(Long drugId)throws DrugException;
+public Drug updateDrug(Drug drug,Long drugId)throws DrugException;
+public void deletDrug(Long drugId) throws DrugException;
+}

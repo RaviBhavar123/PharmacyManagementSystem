@@ -1,0 +1,51 @@
+package com.PharmacyManagementSystem.UserMicroService.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.PharmacyManagementSystem.UserMicroService.entity.User;
+import com.PharmacyManagementSystem.UserMicroService.exception.UserException;
+import com.PharmacyManagementSystem.UserMicroService.repository.UserRepo;
+@Service
+public class UserServiceImpl implements UserService{
+	@Autowired
+	private UserRepo userRepo;
+
+	@Override
+	public User addUser(User user) throws UserException {
+		return userRepo.save(user);
+		
+	}
+
+	@Override
+	public User updateUser(User user) throws UserException {
+		User userRe = userRepo.findById(user.getEmail()).orElseThrow(()-> new UserException("Invalid user Id"));	
+	      userRe.setName(user.getName());
+	      userRe.setContact(user.getContact());
+	      userRe.setEmail(user.getEmail());
+	      userRe.setPassword(user.getPassword());
+	      userRe.setRole(user.getRole());
+		return userRepo.save(userRe);
+	}
+
+	@Override
+	public void deletUser(String Email) throws UserException {
+         userRepo.deleteById(Email);		
+	}
+
+	@Override
+	public User getUser(String Email) throws UserException {
+	return userRepo.findById(Email).orElseThrow(()-> new UserException("Invalid user Id"));
+
+	}
+
+	@Override
+	public List<User> getAll() throws UserException {
+		// TODO Auto-generated method stub
+		return userRepo.findAll();
+	}
+	
+
+}

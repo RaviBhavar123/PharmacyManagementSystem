@@ -1,0 +1,12 @@
+package com.pharmacymanagement.drug.entity;
+
+import java.util.Date;
+
+public class Drug {
+	 private String drugName;
+	 private long drugQuantity;
+	 private long id;
+	 private Date expiryDate;
+	 private long price;
+	 
+}

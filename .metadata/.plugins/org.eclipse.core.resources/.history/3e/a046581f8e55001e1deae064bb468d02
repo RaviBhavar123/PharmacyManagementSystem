@@ -1,0 +1,23 @@
+package com.pharmacymanagement.drug.entity;
+
+import java.util.Date;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection="Drug")
+public class Drug {
+	 private String drugName;
+	 private long drugQuantity;
+	@Id
+	 private long drugid;
+	 private Date expiryDate;
+	 private long price;
+	 
+}

@@ -1,0 +1,175 @@
+package com.pharmacymanagementsystem.OrderMicroService.servive;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.pharmacymanagementsystem.OrderMicroService.entity.Drug;
+import com.pharmacymanagementsystem.OrderMicroService.entity.Order;
+import com.pharmacymanagementsystem.OrderMicroService.entity.User;
+import com.pharmacymanagementsystem.OrderMicroService.exception.OrderException;
+import com.pharmacymanagementsystem.OrderMicroService.repository.OrderRepo;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+	@Autowired
+	private OrderRepo orderRepo;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	/**
+	 * Collecting User details using get usedby userId method and storing it in
+	 * order class.
+	 */
+	@Override
+	public Order addOrder(Order order) throws OrderException {
+		User user = getUserDetailsByUserId(order.getUser().getEmail());
+		List<Drug> newDrugs = new ArrayList<>();
+		List<Drug> drugs = order.getMedicineDetails();
+		for(Drug drug:drugs) {
+			newDrugs.add(getDrugDetailsByDrugId(drug.getDrugid()));
+		}
+		
+//		List<Drug> dr = order.getMedicineDetails().stream().map(Drug -> {
+//			try {
+//				return getDrugDetailsByDrugId(Drug.getDrugid());
+//			} catch (OrderException e) {
+//				// TODO Auto-generated catch block
+//				return null;
+//			}
+//		}).collect(Collectors.toList());
+
+	
+		order.setMedicineDetails(newDrugs);
+
+		if (user.getRole().equals("Admin")) {
+			throw new OrderException("Admin can't place order");
+		}
+		order.setUser(user);// setting the user Details in user object in order class
+		return orderRepo.save(order);
+	}
+
+	@Override
+	public Order updateOrder(Order order, int orderId) throws OrderException {
+
+		Order ord = orderRepo.findById(orderId)
+				.orElseThrow(() -> new OrderException("Order not found with ordr ID " + orderId));
+
+		User user = getUserDetailsByUserId(order.getUser().getEmail());// using user id we are finding the user Details
+																		// from User microservice, and storing it into
+																		// User object.
+		if (user.getRole().equals("Admin")) {
+			throw new OrderException("Admin can't place order");
+		}
+		//Using Stream we are getting the medicine details inside list dr. We are using getDrudbyDrugID methood to get medicine details from Drug microservice 
+//		if the medicine is not available it will return.
+		List<Drug> dr = order.getMedicineDetails().stream().map(Drug -> {
+			try {
+				return getDrugDetailsByDrugId(Drug.getDrugid());
+			} catch (OrderException e) {
+				// TODO Auto-generated catch block
+				return null;
+			}
+		}).collect(Collectors.toList());
+
+		if (dr == null) {
+			throw new OrderException("Drug is not found");
+		}
+		ord.setMedicineDetails(dr);
+
+		// ord.setMedicineDetails(order.getMedicineDetails());
+		ord.setOrderDate(order.getOrderDate());
+		ord.setUser(user);
+		ord.setQuantity(order.getQuantity());
+		ord.setValid(order.isValid());
+		ord.setPickedup(order.isPickedup());
+
+		orderRepo.save(ord);
+		return ord;
+	}
+
+	@Override
+	public void deletOrder(int orderId) {
+
+		orderRepo.deleteById(orderId);
+
+	}
+
+	@Override
+	public Order getOrder(int orderId) throws OrderException {
+
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new OrderException("Order not found with ordr ID " + orderId));
+		return order;
+	}
+
+	@Override
+	public List<Order> getAllOrders() {
+
+		return orderRepo.findAll();
+	}
+
+	@Override
+	public void deletAllOrder(Order order) {
+		orderRepo.deleteAll();
+
+	}
+
+	public List<Order> findByDoctorId(String Email) {
+
+		return orderRepo.findByUser_Email(Email);
+
+	}
+
+	// -------------------------For retrieving User details from
+	// UserManagement----------------------
+
+	public User getUserDetailsByUserId(String Email) throws OrderException {
+
+		String userManagementServiceUrl = "http://localhost:8081/User/get/{Email}";// using Url from the user
+																					// microservice we are getting the
+																					// User details
+
+		ResponseEntity<User> response = restTemplate.getForEntity(userManagementServiceUrl, User.class, Email);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+
+			return response.getBody(); // Return the retrieved Crop
+
+		} else {
+
+			throw new OrderException("userId " + Email + " is not valid");
+
+		}
+
+	}
+
+	// -------------------for retrieving Drug details
+
+	public Drug getDrugDetailsByDrugId(long drugId) throws OrderException {
+
+		String drugManagementServiceUrl = "http://localhost:8082/Drug/get/65";// using Url from the user
+																					// microservice we are getting the
+																					// User details
+
+		ResponseEntity<Drug> response = restTemplate.getForEntity(drugManagementServiceUrl, Drug.class);
+
+		if (response.getStatusCode().is2xxSuccessful()) {
+
+			return response.getBody(); // Return the retrieved Crop
+
+		} else {
+
+			throw new OrderException("drugId" + drugId + " is not valid");
+
+		}
+
+	}
+
+}

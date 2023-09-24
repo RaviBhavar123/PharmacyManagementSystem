@@ -1,0 +1,5 @@
+package com.pharmacymanagement.drug.controller;
+
+public class DrugController {
+
+}

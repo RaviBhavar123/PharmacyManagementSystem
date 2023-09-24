@@ -1,0 +1,30 @@
+package com.pharmacymanagement.drug.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pharmacymanagement.drug.entity.Drug;
+@Service
+public class DrugServiceImpl implements DrugService{
+@Autowired
+
+private drugRepo drugrepo;
+	@Override
+	public Drug addDrug(Drug drug) {
+		// TODO Auto-generated method stub
+		return drugRepo.;
+	}
+
+	@Override
+	public Drug getDrug(Long drugId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Drug updateDrug(Drug drug, Long drugId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

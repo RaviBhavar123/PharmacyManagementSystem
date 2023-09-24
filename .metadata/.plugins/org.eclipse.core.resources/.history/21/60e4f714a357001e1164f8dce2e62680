@@ -1,0 +1,104 @@
+package com.pharmacymanagementsystem.OrderMicroService.servive;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.pharmacymanagementsystem.OrderMicroService.entity.Order;
+import com.pharmacymanagementsystem.OrderMicroService.entity.User;
+import com.pharmacymanagementsystem.OrderMicroService.exception.OrderException;
+import com.pharmacymanagementsystem.OrderMicroService.repository.OrderRepo;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+	@Autowired
+	private OrderRepo orderRepo;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Override
+	public Order addOrder(Order order) throws OrderException {
+		User user = getUserDetailsByUserId(order.getUser().getEmail());
+		if(user.getRole().equals("Admin")) {
+			throw new OrderException("Admin can't place order");
+		}
+		return orderRepo.save(order);
+	}
+
+	@Override
+	public Order updateOrder(Order order, int orderId) throws OrderException {
+		
+		Order ord= orderRepo.findById(orderId)
+				.orElseThrow(()-> new OrderException("Order not found with ordr ID "+orderId));
+		
+		ord.setMedicineDetails(order.getMedicineDetails());
+		ord.setOrderDate(order.getOrderDate());
+		ord.setUser(order.getUser());
+		ord.setQuantity(order.getQuantity());
+		ord.setValid(order.isValid());
+		ord.setPickedup(order.isPickedup());
+		
+		orderRepo.save(ord);
+		return ord;
+	}
+
+	@Override
+	public void deletOrder(int orderId) {
+		
+		orderRepo.deleteById(orderId);
+
+	}
+
+	@Override
+	public Order getOrder(int orderId) throws OrderException {
+		
+		Order order=orderRepo.findById(orderId).orElseThrow(()-> new OrderException("Order not found with ordr ID "+orderId));
+		return order;
+	}
+
+	@Override
+	public List<Order> getAllOrders() {
+	
+		return orderRepo.findAll();
+	}
+
+	@Override
+	public void deletAllOrder(Order order) {
+		orderRepo.deleteAll();
+		
+	}
+	
+	public List<Order> findByDoctorId(int doctorId){
+		
+		return orderRepo.findByDoctorId(doctorId);
+		
+	}
+	
+	
+	//-------------------------For retrieving User details from UserManagement----------------------
+
+	public User getUserDetailsByUserId(String Email) {
+
+	String userManagementServiceUrl = "http://localhost:8081/User/get/{Email}";
+
+	        ResponseEntity<User> response = restTemplate.getForEntity(userManagementServiceUrl, User.class, Email);
+
+	        if (response.getStatusCode().is2xxSuccessful()) {
+
+	            return response.getBody(); // Return the retrieved Crop
+
+	        } else {
+
+	         throw new OrderException("userId " + Email + " is not valid");
+
+	        }
+
+	    }
+
+
+
+}

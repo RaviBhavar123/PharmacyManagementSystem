@@ -1,0 +1,25 @@
+package com.pharmacymanagement.drug.service;
+
+import com.pharmacymanagement.drug.entity.Drug;
+
+public class DrugServiceImpl implements DrugService{
+
+	@Override
+	public Drug addDrug(Drug drug) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Drug getDrug(Long drugId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Drug updateDrug(Drug drug, Long drugId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

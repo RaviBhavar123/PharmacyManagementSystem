@@ -1,0 +1,5 @@
+package com.pharmacymanagement.drug.service;
+
+public class DrugServiceImpl {
+
+}
