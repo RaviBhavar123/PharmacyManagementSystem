@@ -27,21 +27,27 @@ public class DrugServiceImpl implements DrugService {
 	}
 
 	@Override
-	public Drug updateDrug(Drug drug, Long drugId) {
+	public Drug updateDrug(Long drugId, Drug drug) {
 		Drug drug1 = drugRepo.findById(drugId).orElseThrow(() -> new DrugException("Inavlid Drug Id " + drugId));
-		drug1.setDrugName(drug1.getDrugName());
-		drug1.setDrugid(drug1.getDrugid());
-		drug1.setDrugQuantity(drug1.getDrugQuantity());
-		drug1.setPrice(drug1.getPrice());
-		drug1.setExpiryDate(drug1.getExpiryDate());
-		drugRepo.save(drug1);
-		return drug1;
+		drug1.setDrugName(drug.getDrugName());
+		drug1.setDrugid(drug.getDrugid());
+		drug1.setDrugQuantity(drug.getDrugQuantity());
+		drug1.setPrice(drug.getPrice());
+		drug1.setExpiryDate(drug.getExpiryDate());
+		drugRepo.save(drug);
+		return drug;
 	}
 
 	@Override
 	public void deletDrug(Long drugId) throws DrugException {
 		drugRepo.deleteById(drugId);
 
+	}
+
+	@Override
+	public List<Drug> getallDrug() throws DrugException {
+		List<Drug> drug=drugRepo.findAll();
+		return drug;
 	}
 	
 	

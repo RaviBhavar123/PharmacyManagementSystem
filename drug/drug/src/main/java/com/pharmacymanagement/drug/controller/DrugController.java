@@ -1,8 +1,11 @@
 package com.pharmacymanagement.drug.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +20,8 @@ import com.pharmacymanagement.drug.exception.DrugException;
 import com.pharmacymanagement.drug.service.DrugService;
 
 @RestController
-@RequestMapping("/Drug")
+@RequestMapping("/drug")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DrugController {
 	@Autowired
 	private DrugService drugService;
@@ -28,9 +32,9 @@ public class DrugController {
 		return new ResponseEntity<>(drug1, HttpStatus.OK);
 	}
 
-	@PutMapping("/update")
-	public ResponseEntity<Drug> update(@RequestBody Drug drug) throws DrugException {
-		Drug drug2 = drugService.updateDrug(drug, null);
+	@PutMapping("/update/{drugId}")
+	public ResponseEntity<Drug> update(@PathVariable Long drugId, @RequestBody Drug drug) throws DrugException {
+		Drug drug2 = drugService.updateDrug( drugId , drug);
 
 		return new ResponseEntity<>(drug2, HttpStatus.OK);
 
@@ -42,11 +46,19 @@ public class DrugController {
 		return new ResponseEntity<>(drug1, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delet/{drugId}")
+	@DeleteMapping("/delete/{drugId}")
 	public ResponseEntity<?> delet(@PathVariable Long drugId) throws DrugException {
 		drugService.deletDrug(drugId);
 		return new ResponseEntity<>("Deleted", HttpStatus.OK);
 
 	}
+	
+	@GetMapping("/get")
+	public ResponseEntity<?> getAll(){
+		List<Drug> ref= drugService.getallDrug();
+		return new ResponseEntity<>(ref,HttpStatus.OK);
+	
+	}
+
 
 }

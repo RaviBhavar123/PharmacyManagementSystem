@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Document(collection = "DrugDta")
 public class Drug {
+	
 	private String drugName;
 	private long drugQuantity;
 	@Id
 	private long drugid;
-	private String eMail;
 	private Date expiryDate;
 	private long price;
 
@@ -30,14 +30,7 @@ public class Drug {
 		this.drugName = drugName;
 	}
 
-	public String geteMail() {
-		return eMail;
-	}
-
-	public void seteMail(String eMail) {
-		this.eMail = eMail;
-	}
-
+	
 	public long getDrugQuantity() {
 		return drugQuantity;
 	}
@@ -70,12 +63,11 @@ public class Drug {
 		this.price = price;
 	}
 
-	public Drug(String drugName, long drugQuantity, long drugid, Date expiryDate, long price,String eMail) {
+	public Drug(String drugName, long drugQuantity, long drugid, Date expiryDate, long price) {
 		super();
 		this.drugName = drugName;
 		this.drugQuantity = drugQuantity;
 		this.drugid = drugid;
-		this.eMail=eMail;
 		this.expiryDate = expiryDate;
 		this.price = price;
 	}
